@@ -1,10 +1,11 @@
-use norgopolis_module::{Module, invoker_service::Service, module_communication::MessagePack};
+use norgopolis_module::{invoker_service::Service, module_communication::MessagePack, Module};
 use tokio_stream::wrappers::UnboundedReceiverStream;
 use tonic::Status;
 
+mod ontology;
+
 #[derive(Default)]
-struct GTD {
-}
+struct GTD {}
 
 #[norgopolis_module::async_trait]
 impl Service for GTD {
@@ -16,7 +17,11 @@ impl Service for GTD {
         args: Option<MessagePack>,
     ) -> Result<Self::Stream, Status> {
         let (tx, rx) = tokio::sync::mpsc::unbounded_channel();
-        tx.send(Ok(MessagePack::encode("ok").unwrap())).unwrap();
+
+        match function.as_str() {
+            "capture" => {}
+            _ => todo!(),
+        }
 
         Ok(UnboundedReceiverStream::new(rx))
     }
@@ -24,7 +29,5 @@ impl Service for GTD {
 
 #[tokio::main]
 async fn main() {
-    Module::start(GTD::default())
-        .await
-        .unwrap()
+    Module::start(GTD::default()).await.unwrap()
 }
