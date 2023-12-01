@@ -2,6 +2,7 @@ use norgopolis_module::{invoker_service::Service, module_communication::MessageP
 use tokio_stream::wrappers::UnboundedReceiverStream;
 use tonic::Status;
 
+mod ontologies;
 mod ontology;
 
 #[derive(Default)]
