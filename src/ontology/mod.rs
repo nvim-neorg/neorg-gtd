@@ -7,39 +7,18 @@
 
 use std::{collections::HashMap, path::PathBuf};
 
-/// A very generic trait of a View.
-/// Views allow an [OpaqueOntology]'s contents to be examined and retrieved in a structured manner.
-pub trait View {}
+// An ontology needs some way of defining its structure (and it needs a view over the data)
+// The data can be laid out in any way you'd like but a view should transform that data into
+// something that can be easily expressable.
 
-/// A trait to display the contents of an Ontology in the form of a list of items.
-pub trait ListView<V: View, D: OpaqueOntology<V, Derives = D>, S: OpaqueOntology<V, Derives = D>>:
-    View
-{
-    fn display(&self) -> S::Structure;
+pub trait View {
+    type Data;
 }
 
-/// A generic trait of an ontology. The trait is "opaque" because it contains no
-/// physical data, only the general structure of an ontology.
-///
-/// Ontologies are collections of information about a given topic. Examples of ontologies include
-/// but are not limited to:
-/// - Lists of upcoming tasks
-/// - Graphs of connections between notes
-/// - Time-sensitive calendars
-///
-/// All of these are representable via this trait.
-///
-/// Ontologies may derive from other ontologies if both have the same view (i.e. the same data layout).
-pub trait OpaqueOntology<V: View + ?Sized> {
-    type Derives: OpaqueOntology<V>;
-    type Structure;
-}
+pub trait Ontology<V: View> {
+    type Data;
 
-// Since every ontology must derive from something, here we define an identity ontology. Such an
-// ontology has no structure and simply derives from itself.
-impl<V: View> OpaqueOntology<V> for () {
-    type Structure = ();
-    type Derives = Self;
+    fn display(&self) -> V::Data;
 }
 
 /// A unit of data for general metadata.

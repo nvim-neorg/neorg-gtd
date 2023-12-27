@@ -4,9 +4,12 @@ use tonic::Status;
 
 mod ontologies;
 mod ontology;
+mod views;
 
 #[derive(Default)]
-struct GTD {}
+struct GTD {
+    inbox: ontologies::inbox::Inbox,
+}
 
 #[norgopolis_module::async_trait]
 impl Service for GTD {
